@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 	// set flag to allow user to input name of problems csv file
 	csvFilename := flag.String("csv", "problems.csv", "a csv file in the format of 'question, answer'")
+	timeLimit := flag.Int("limit", 30, "time limit in seconds for the quiz")
 	flag.Parse()
 	// open csv file
 	file, err := os.Open(*csvFilename)
@@ -25,25 +27,35 @@ func main() {
 	}
 	// parse the problems into problem structure
 	problems := parseProblems(lines)
-
+	// create a timer for the quiz
+	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
 	correct := 0 // initiate counter for correct answers
-	for i, p := range problems {
-		correct = testProblem(i, p, correct) // test user with problem
-	}
-	fmt.Printf("You scored %d/%d ", correct, len(problems))
-}
 
-func testProblem(i int, p problem, correct int) int {
-	fmt.Printf("Problem #%d: %s = ", i+1, p.question)
-	var response string          // initiate variable for response from user
-	fmt.Scanf("%s\n", &response) // scan for response (\n captures when user hits enter)
-	if response == p.answer {
-		fmt.Println("Correct")
-		correct++
-	} else {
-		fmt.Println("Incorrect")
-	}
-	return correct
+	problemLoop:
+		for i, p := range problems {
+			fmt.Printf("Problem #%d: %s = ", i+1, p.question)
+			// create answer channel for strings to return scan response
+			responseCh := make(chan string)
+			// closure (anonymous function that uses data defined outside of it) to scan for answer
+			go func() {
+				var response string          // initiate variable for response from user
+				fmt.Scanf("%s\n", &response) // scan for response (\n captures when user hits enter)
+				responseCh <- response
+			}()
+			
+			select {
+			case <-timer.C:
+				fmt.Printf("You scored %d/%d ", correct, len(problems))
+				break problemLoop
+			case response := <- responseCh:
+				if response == p.answer {
+					fmt.Println("Correct")
+					correct++
+				} else {
+					fmt.Println("Incorrect")
+				}
+			}
+		}
 }
 
 func parseProblems(lines [][]string) []problem {
