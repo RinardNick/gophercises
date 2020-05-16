@@ -11,8 +11,8 @@ func main() {
 
 	// Build MapHandler using mux as fallback
 	pathsToUrls := map[string]string{
-		"short-beta": "https://beta.talagentfinancial.com",
-		"short-staging": "https://staging.talagentfinancial.com",
+		"/short-beta": "https://beta.talagentfinancial.com",
+		"/short-staging": "https://staging.talagentfinancial.com",
 	}
 	mapHandler := handler.MapHandler(pathsToUrls, mux)
 
