@@ -42,10 +42,10 @@ func main() {
 				fmt.Scanf("%s\n", &response) // scan for response (\n captures when user hits enter)
 				responseCh <- response
 			}()
-			
+
 			select {
-			case <-timer.C:
-				fmt.Printf("You scored %d/%d ", correct, len(problems))
+			case <- timer.C:
+				fmt.Println("You ran out of time!!")
 				break problemLoop
 			case response := <- responseCh:
 				if response == p.answer {
@@ -56,6 +56,7 @@ func main() {
 				}
 			}
 		}
+		fmt.Printf("You scored %d / %d ", correct, len(problems))
 }
 
 func parseProblems(lines [][]string) []problem {
