@@ -22,7 +22,7 @@ func main() {
 		log.Println("Failed to Unmarshall JSON: ", err)
 	}
 
-	fmt.Println(story)
+	fmt.Println(story.debate)
 }
 
 func readWholeFile(filepath string) ([]byte, error) {
