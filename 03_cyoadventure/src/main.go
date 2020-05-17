@@ -1,6 +1,7 @@
 package main
 
 // reading in files in go https://appdividend.com/2019/12/19/how-to-read-files-in-golang-go-file-read-example/
+// handling JSON in go https://blog.golang.org/json
 
 import (
 	"encoding/json"
@@ -22,7 +23,22 @@ func main() {
 		log.Println("Failed to Unmarshall JSON: ", err)
 	}
 
-	fmt.Println(story.debate)
+	m := story.(map[string]interface{})
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "is string", vv)
+		case float64:
+			fmt.Println(k, "is float64", vv)
+		case []interface{}:
+			fmt.Println(k, "is an array")
+			for i, u := range vv {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(k, "is of some other type")
+		}
+	}
 }
 
 func readWholeFile(filepath string) ([]byte, error) {
