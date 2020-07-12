@@ -10,7 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	story "story"
+	"github.com/RinardNick/gophercises/03_cyoadventure/story"
 	"strings"
 )
 
