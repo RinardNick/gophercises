@@ -2,26 +2,21 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"net/http"
 
 	link "github.com/RinardNick/gophercises/04_htmllinkparser/link"
 )
 
-var exampleHTML = `<html>
-<body>
-  <h1>Hello!</h1>
-  <a href="/other-page">A link to another page</a>
-</body>
-</html>
-`
-
 func main() {
 
-	r := strings.NewReader(exampleHTML)
-
-	links, err := link.Parse(r)
+	response, err := http.Get("https://www.talagentfinancial.com/")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%+v\n", links)
+
+	links, err := link.Parse(response.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%#v\n", links)
 }
