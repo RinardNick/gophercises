@@ -2,20 +2,26 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	link "github.com/RinardNick/gophercises/04_htmllinkparser/link"
 )
 
-func main() {
-	htmlFilepath := "../solutions/04 link/ex1.html"
+var exampleHTML = `<html>
+<body>
+  <h1>Hello!</h1>
+  <a href="/other-page">A link to another page</a>
+</body>
+</html>
+`
 
-	link, err := link.Parse(htmlFilepath)
+func main() {
+
+	r := strings.NewReader(exampleHTML)
+
+	links, err := link.Parse(r)
 	if err != nil {
 		panic(err)
 	}
-
-	for _, v := range link {
-		fmt.Println(v)
-	}
-
+	fmt.Printf("%+v\n", links)
 }
