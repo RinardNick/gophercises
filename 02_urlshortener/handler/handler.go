@@ -7,7 +7,7 @@ import (
 
 // MapHandler will handle mapping urls
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r  *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 		fmt.Println(path)
 		fmt.Println(pathsToUrls[path])
